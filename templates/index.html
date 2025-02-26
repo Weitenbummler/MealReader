@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: {{ page_bg_color }};
+      color: {{ cell_text_color }};
+    }
+    table {
+      border-collapse: separate;
+      border-spacing: {{ table_border_spacing }};
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: {{ cell_padding }};
+      text-align: center;
+      vertical-align: middle;
+    }
+    th.title-header {
+      background-color: {{ title_bg_color }};
+      color: {{ title_text_color }};
+    }
+    th.children-header, td.children-header {
+      background-color: {{ children_bg_color }};
+      color: {{ children_text_color }};
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th class="children-header" rowspan="3">Kind</th>
+        {% for date in header_date %}
+          <th class="title-header">{{ date }}</th>
+        {% endfor %}
+      </tr>
+      <tr>
+        {% for weekday in header_weekday %}
+          <th class="title-header">{{ weekday }}</th>
+        {% endfor %}
+      </tr>
+      <tr>
+        {% for dish in header_dish %}
+          <th class="title-header">{{ dish }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for child in children %}
+      <tr>
+        <td class="children-header">{{ child.child }}</td>
+        {% for day in sorted_days %}
+          {% set data = child.days.get(day) %}
+          <td style="background-color: {{ order_yes_color if data and data.ordered > 0 else order_no_color }};
+                     color: {{ order_yes_text_color if data and data.ordered > 0 else order_no_text_color }};">
+            {% if data %}
+              {{ "Bestellt" if data.ordered > 0 else "Nicht bestellt" }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <hr>
+</body>
+</html>
